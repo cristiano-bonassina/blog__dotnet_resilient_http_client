@@ -20,7 +20,7 @@ services.AddLogging(builder =>
 
 // Create a named http client
 var httpClientBuilder = services.AddHttpClient("MyHttpClient", httpClient =>
-{
+{ 
     httpClient.BaseAddress = new("https://jsonplaceholder.typicode.com");
 });
 
@@ -33,7 +33,11 @@ httpClientBuilder.AddResilienceHandler("CustomPipeline", builder =>
         BackoffType = DelayBackoffType.Constant,
         Delay = TimeSpan.FromSeconds(1),
         MaxRetryAttempts = 3,
-        UseJitter = true
+        UseJitter = true,
+        ShouldHandle = args =>
+        {
+            return ValueTask.FromResult(args is { Outcome.Result.StatusCode: HttpStatusCode.RequestTimeout });
+        }
     });
 
     // See: https://www.pollydocs.org/strategies/circuit-breaker.html
