@@ -61,6 +61,7 @@ httpClientBuilder.AddResilienceHandler("CustomPipeline", builder =>
 // Add message handler to simulate http errors
 httpClientBuilder.AddHttpMessageHandler(x => new FailingDelegatingHandler());
 
+// Create the DI container
 var serviceProvider = services.BuildServiceProvider();
 
 var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
